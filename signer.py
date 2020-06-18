@@ -44,6 +44,7 @@ TAIL = {
     "cpp": "c++",
     "php": "php",
     "sh": "shell",
+    "c": "c",
 }
 
 DATA_DIC = {"project":"", "filename":"", "programmer":"", "description":"", "start_date":""}
@@ -149,7 +150,7 @@ class Header:
         # 每次用前初始化，确保万无一失
         self.header = []
         self.header.append(self.block_cmt[0])
-        self.header.append("\t%s" % (self.sym[0]*75))
+        self.header.append("\n\t%s" % (self.sym[0]*75))
         
         # 选模板
         self.cache_pro()
