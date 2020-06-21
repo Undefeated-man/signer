@@ -19,7 +19,6 @@
 	###########################################################################
 """
 
-
 from os.path import exists
 import os
 import json
@@ -34,7 +33,8 @@ LAN_DIC = {
     "c++": ["/*", "*/"],
     "javascript": ["/*", "*/"],
     "css": ["/*", "*/"],
-    "shell": [":<<!", "!"]
+    "shell": [":<<!", "!"],
+    "html": ["<!--", "-->"],
 }
 
 TAIL = {
@@ -46,6 +46,7 @@ TAIL = {
     "php": "php",
     "sh": "shell",
     "c": "c",
+    "html": "html",
 }
 
 DATA_DIC = {"project":"", "filename":"", "programmer":"", "description":"", "start_date":""}
@@ -204,7 +205,7 @@ class Header:
             返回一个列表元素(字符串)，作为一个信息点。
         """
         chinese = 0
-        if len(str(kw))+len(self.data.get(kw, ''))+2 < 55:     # 字符串正常长度
+        if len(str(kw))+len(self.data.get(kw, ''))+2 < 55 and not ischinese(self.data.get(kw, ''), type=1):     # 字符串正常长度
             for ch in [i for i in self.data.get(kw, '')]:
                 if ischinese(ch):
                     chinese += 1
@@ -277,11 +278,12 @@ class Header:
 
                 print("\n%s%s\n%s%s\n%s%s\n" % ('\t', '###'*20, '\t'*2, filename, '\t', '###'*20))
                 try:
-                    f_num = input("请输入你要用的文件序号：")
+                    f_num = input("请输入你要用的文件序号(新文件输入n)：")
                     f_num = int(f_num)
                     self.data = self.cache["project"][pro_num]["data"][f_num]
                 except:
-                    print("哎呀，主人请输入规定数字哦！")
+                    self.data = self.cache["project"][pro_num]["data"][-1]
+                    self.data["filename"] = self.o_file
             except:
                 print("哎呀，主人请输入规定数字哦！")
         elif func == '2':
