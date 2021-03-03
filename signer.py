@@ -1,23 +1,23 @@
 """
     ###########################################################################
 	#		                                                                  #
-	#		Project: signer                                                   #
+	#		project: signer                                                   #
 	#		                                                                  #
-	#		Filename: signer.py                                               #
+	#		filename: signer.py                                               #
 	#		                                                                  #
-	#		Programmer: V                                                     #
+	#		programmer: Vincent Holmes                                        #
 	#		                                                                  #
-	#		Description: 可以根据模板init.ini自动格式化出一个漂亮的文件头,    #
-    #                     还可以缓存之前使用过的模板, 可以选择签名为同一个    #
-	#                     project下的不同文件. 例子模板init.ini文件有两行：   #
-	#                     第一行是首尾行的格式, 第二行是中间两边的符号.       #
+	#		description: 可以自动格式化出一个漂亮的文件头, 还可以缓存之前     #
+	#                     使用过的模板, 可以选择签名为同一个project           #
+	#                     下的不同文件.                                       #
 	#		                                                                  #
-	#		Start_date: 2020-06-15                                            #
+	#		start_date: 2020-06-15                                            #
 	#		                                                                  #
-	#		Last_update: 2020-06-18                                           #
+	#		last_update: 2021-03-03                                           #
 	#		                                                                  #
 	###########################################################################
 """
+
 
 from os.path import exists
 import os
@@ -35,6 +35,7 @@ LAN_DIC = {
     "css": ["/*", "*/"],
     "shell": [":<<!", "!"],
     "html": ["<!--", "-->"],
+    "r":[""]
 }
 
 TAIL = {
@@ -47,6 +48,7 @@ TAIL = {
     "sh": "shell",
     "c": "c",
     "html": "html",
+    "r":"r"
 }
 
 DATA_DIC = {"project":"", "filename":"", "programmer":"", "description":"", "start_date":""}
@@ -56,7 +58,7 @@ SIGN_LST = ["project", "filename", "programmer", "description", "start_date", "l
 ####################################### 功能区 #################################
 
 #检验是否全是中文字符
-def ischinese(strs, type=0):
+def isChinese(strs, type=0):
     """
     用于识别中文。
 
@@ -205,9 +207,9 @@ class Header:
             返回一个列表元素(字符串)，作为一个信息点。
         """
         chinese = 0
-        if len(str(kw))+len(self.data.get(kw, ''))+2 < 55 and not ischinese(self.data.get(kw, ''), type=1):     # 字符串正常长度
+        if len(str(kw))+len(self.data.get(kw, ''))+2 < 55 and not isChinese(self.data.get(kw, ''), type=1):     # 字符串正常长度
             for ch in [i for i in self.data.get(kw, '')]:
-                if ischinese(ch):
+                if isChinese(ch):
                     chinese += 1
             n = 66 - len(str(kw)) - len(self.data.get(kw, '')) - chinese - 2
             if self.data.get(kw, '') == '':
@@ -216,7 +218,7 @@ class Header:
                 lines = "\n\t%s\t\t%s: %s%s%s" % (self.sym[1], str(kw.capitalize()), self.data.get(kw, ""), ' ' * n, self.sym[1])
         else:                           # 字符串过长，切成n段
             # 判断是中文还是英文
-            if ischinese(self.data[kw], type=1):
+            if isChinese(self.data[kw], type=1):
                 ch_num = 25
             else:
                 ch_num = 50
@@ -231,14 +233,14 @@ class Header:
 
             # 整理成一个元素
             for ch in [i for i in content[0]]:
-                if ischinese(ch):
+                if isChinese(ch):
                     chinese += 1
             n = 66 - len(content[0]) - len(str(kw)) - chinese - 2
             lines = "\n\t%s\t\t%s: %s%s%s" % (self.sym[1], str(kw.capitalize()), content[0], ' ' * n, self.sym[1])
             for i in range(1, len(content)):
                 chinese = 0
                 for ch in [i for i in content[i]]:
-                    if ischinese(ch):
+                    if isChinese(ch):
                         chinese += 1
                 n = 52 - len(content[i]) - chinese
                 line = "\n\t%s%s%s%s%s" % (self.sym[1], ' '*21, content[i], ' ' * n, self.sym[1])
